@@ -1,0 +1,16 @@
+services:
+  hop-server:
+    image: apache/hop:latest
+    container_name: hop-server
+    ports:
+      - "8080:8080"
+    environment:
+      - HOP_SERVER_USER=cluster
+      - HOP_SERVER_PASS=cluster
+      - HOP_AUDIT_TO_METADATA=Y
+    volumes:
+      # Pasta local para arquivos de configuração e projetos gerais
+      - ./hop-config:/files
+      # Pasta local para persistir metadados e estado interno do Hop
+      - ./hop-system-config:/root/.hop
+    restart: unless-stopped
