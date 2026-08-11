@@ -1,7 +1,9 @@
+version: '3.8'
+
 services:
-  hop-server:
-    image: apache/hop:latest
-    container_name: hop-server
+  hop-web:
+    image: apache/hop-web:latest
+    container_name: hop-web
     ports:
       - "8080:8080"
     environment:
@@ -9,8 +11,15 @@ services:
       - HOP_SERVER_PASS=cluster
       - HOP_AUDIT_TO_METADATA=Y
     volumes:
-      # Pasta local para arquivos de configuração e projetos gerais
       - ./hop-config:/files
-      # Pasta local para persistir metadados e estado interno do Hop
       - ./hop-system-config:/root/.hop
+      - /mnt:/mnt:ro
+      # Mapeia a pasta local de drivers ou o driver individual para o diretório correto
+      - ./postgresql-42.7.3.jar:/usr/local/tomcat/jdbc-drivers/postgresql-42.7.3.jar
+    networks:
+      - hop-jenkins-net
     restart: unless-stopped
+
+networks:
+  hop-jenkins-net:
+    external: true
